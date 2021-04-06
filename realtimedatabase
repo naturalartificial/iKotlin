@@ -1,0 +1,80 @@
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import com.google.firebase.database.*
+
+
+class MainActivity2 : AppCompatActivity() {
+
+    private lateinit var database: DatabaseReference
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_third)
+
+        val gotonewActivity = findViewById<TextView>(R.id.gotonewActivity)
+        gotonewActivity.setOnClickListener {
+            val intent = Intent(this@MainActivity2, ThirdActivity::class.java)
+            startActivity(intent)
+        }
+
+        var database = FirebaseDatabase.getInstance().reference
+
+        val in_Submit: Button = findViewById(R.id.in_Submit)
+        val in_Id: EditText = findViewById(R.id.in_Id)
+        val in_Name: EditText = findViewById(R.id.in_Name)
+        val in_Email: EditText = findViewById(R.id.in_Email)
+
+        val in_Fetch:Button=findViewById(R.id.in_Fetch)
+
+
+        in_Submit.setOnClickListener {
+            var in_Id = in_Id.text.toString().toInt()
+            var in_Name = in_Name.text.toString()
+            var in_Email = in_Email.text.toString()
+
+            database.child(in_Id.toString()).setValue(testfile(in_Name, in_Email))
+        }
+
+        //GetData
+        var getdata=object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var sb=StringBuilder()
+                for (i in snapshot.children){
+                    var in_Name=i.child("in_Name").getValue()
+                    var in_Email=i.child("in_Email").getValue()
+                    sb.append("${i.key} $in_Name $in_Email\n")
+                }
+                in_Fetch.setText(sb)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        }
+        database.addValueEventListener(getdata)
+        database.addListenerForSingleValueEvent(getdata)
+    }
+}
+
+
+
+
+
+
+//file
+
+class testfile {
+
+    var in_Name= ""
+    var in_Email= ""
+
+    constructor(in_Name:String, in_Email:String) {
+
+        this.in_Name=in_Name
+        this.in_Email=in_Email
+    }
+}
+
