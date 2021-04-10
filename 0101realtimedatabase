@@ -1,0 +1,60 @@
+package com.example.abcde
+
+data class rtdb(val studentNameInput:String?=null, val guardianNameInput:String?=null, val emailInput:String?=null,val addressInput:String?=null, val landmarkInput:String?=null,val pincodeInput:String?=null){
+
+}
+
+//////////////////////////////////////////////////
+
+package com.example.abcde
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.Toast
+import com.example.abcde.databinding.ActivityRegisterFourBinding
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+
+class RegisterFour : AppCompatActivity() {
+
+    private lateinit var binding: ActivityRegisterFourBinding
+    private lateinit var database:DatabaseReference
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding= ActivityRegisterFourBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.saveProfileInfo.setOnClickListener {
+            val studentNameInput=binding.studentNameInput.text.toString()
+            val guardianNameInput=binding.guardianNameInput.text.toString()
+            val emailInput=binding.emailInput.text.toString()
+            val addressInput=binding.addressInput.text.toString()
+            val landmarkInput=binding.landmarkInput.text.toString()
+            val pincodeInput=binding.pincodeInput.text.toString()
+
+            database=FirebaseDatabase.getInstance().getReference("Users")
+            val User=rtdb(studentNameInput,guardianNameInput,emailInput,addressInput,landmarkInput,pincodeInput)
+            database.child(pincodeInput).setValue(User).addOnSuccessListener {
+                binding.studentNameInput.text.clear()
+                binding.guardianNameInput.text.clear()
+                binding.emailInput.text.clear()
+                binding.addressInput.text.clear()
+                binding.landmarkInput.text.clear()
+                binding.pincodeInput.text.clear()
+
+                Toast.makeText(this,"Successfully Saved",Toast.LENGTH_SHORT).show()
+
+            }.addOnFailureListener {
+                Toast.makeText(this,"Failed",Toast.LENGTH_SHORT).show()
+            }
+
+
+        }
+    }
+}
+
+
+
+
