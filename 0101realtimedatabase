@@ -1,3 +1,9 @@
+buildFeatures{
+
+        viewBinding true
+    }
+//////////////////////////////////////////////////
+
 package com.example.abcde
 
 data class rtdb(val studentNameInput:String?=null, val guardianNameInput:String?=null, val emailInput:String?=null,val addressInput:String?=null, val landmarkInput:String?=null,val pincodeInput:String?=null){
